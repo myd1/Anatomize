@@ -1,6 +1,8 @@
 import random, heapq
 import pdb
 
+# by Qiyuan Gong
+# qiyuangong@gmail.com
 
 _DEBUG = True
 
