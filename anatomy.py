@@ -4,8 +4,22 @@ import pdb
 # by Qiyuan Gong
 # qiyuangong@gmail.com
 
-_DEBUG = True
+# @INPROCEEDINGS{
+#   author = {Xiao, Xiaokui and Tao, Yufei},
+#   title = {Anatomy: simple and effective privacy preservation},
+#   booktitle = {Proceedings of the 32nd international conference on Very large data
+#     bases},
+#   year = {2006},
+#   series = {VLDB '06},
+#   pages = {139--150},
+#   publisher = {VLDB Endowment},
+#   acmid = {1164141},
+#   location = {Seoul, Korea},
+#   numpages = {12}
+# }
 
+
+_DEBUG = True
 
 class SABucket(object):
 
@@ -40,12 +54,13 @@ class Group(object):
         return False
 
 
-def anatomy(gdata, L):
+def anatomy(data, L):
     """
-    L is the denote l in l-diversity
-    gdata is a 2-dimensional list, i.e. [[],[]]
+    only one SA is supported in anatomy.
     Separation grouped member into QIT and SAT
     Use heap to get l largest buckets
+    L is the denote l in l-diversity.
+    data is a list, i.e. [qi1,qi2,sa]
     """
     groups = []
     result = []
@@ -55,7 +70,10 @@ def anatomy(gdata, L):
         print '*' * 10
         print "Begin Anatomy!"
     print "L=%d" % L
-    for i, temp in enumerate(gdata):
+    # Group SA into buckets
+
+
+    for i, temp in enumerate(data):
         # push to heap reversely
         pos = len(temp) * -1
         if pos == 0:
