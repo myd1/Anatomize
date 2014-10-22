@@ -81,7 +81,9 @@ def anatomy(data, L):
         except:
             buckets[list_temp] = [temp]
     # group stage
-    # use heap to sort buckets
+    # each round choose l largest buckets, then pop 
+    # an element from these buckets to form a group
+    # We use heap to sort buckets.
     for i, temp in enumerate(buckets.values()):
         # push to heap reversely
         pos = len(temp) * -1
@@ -92,10 +94,12 @@ def anatomy(data, L):
         newgroup = Group()
         length_list = []
         SAB_list = []
+        # choose l largest buckets
         for i in range(L):
             (length, temp) = heapq.heappop(h)
             length_list.append(length)
             SAB_list.append(temp)
+        # pop an element from choosen buckets
         for i in range(L):
             temp = SAB_list[i]
             length = length_list[i]
@@ -107,6 +111,11 @@ def anatomy(data, L):
             heapq.heappush(h, (length, temp))
         groups.append(newgroup)
     # residue-assign stage
+    # If the dataset is even distributed on SA, only one tuple will
+    # remain in this stage. However, most dataset don't satisfy this
+    # condition, so lots of records need to be re-assigned. In worse 
+    # case, some records cannot be assigned to any groups, which will
+    # be suppressed (deleted).
     while len(h):
         (length, temp) = heapq.heappop(h)
         index = temp.index
@@ -118,7 +127,7 @@ def anatomy(data, L):
             else:
                 suppress.extend(temp.member[:])
                 break
-    # transform result
+    # transform and print result
     for i, t in enumerate(groups):
         t.index = i
         result.append(t.member[:])
