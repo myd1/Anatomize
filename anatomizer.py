@@ -54,7 +54,7 @@ class Group(object):
         return False
 
 
-def anatomy(data, L):
+def anatomizer(data, L):
     """
     only one SA is supported in anatomy.
     Separation grouped member into QIT and SAT
@@ -71,7 +71,7 @@ def anatomy(data, L):
     h = []
     if _DEBUG:
         print '*' * 10
-        print "Begin Anatomy!"
+        print "Begin Anatomizer!"
     print "L=%d" % L
     # Assign SA into buckets
     for temp in data:

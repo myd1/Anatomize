@@ -1,8 +1,13 @@
 Anatomy
 ===========================
-Anatomy is a linear anonymization algorithm base on lossy join, proposed by Xiao et. al.[1]. Anatomy anonymize dataset by breaking direct correlation between QID and SA (publish QID and SA in separated tables). To our knowledge, Anatomy is the fastest algorithm, which preserve good data utility at the same time. Although Xiao et. al. gave the pseudocode in his papers, the original source code is not available. You can find the Java implement in Anonymization Toolbox[2].
+Anatomizer is a linear anonymization algorithm base on Anatomy, proposed by Xiao et. al.[1]. Anatomy anonymize dataset by breaking direct correlation between QID and SA (publish QID and SA in separated tables). To our knowledge, Anatomizer is the fastest algorithm, which preserve good data utility at the same time. Although Xiao et. al. gave the pseudocode in his papers, the original source code is not available. You can find the Java implement in Anonymization Toolbox[2].
 
-This repository is an *open source python implement* for Anatomy. I implement this algorithm in python for further study.
+This repository is an *open source python implement* for Anatomizer. I implement this algorithm in python for further study.
+
+Usage:
+	# the variable L for l-diversity
+	python anonymizer.py L
+	# the anonymizer data is stored in result.
 
 ### Motivation 
 Researches on data privacy have lasted for more than ten years, lots of great papers have been published. However, only a few open source projects are available on Internet [2-3], most open source projects are using algorithms proposed before 2004! Fewer projects have been used in real life. Worse more, most people even don't hear about it. Such a tragedy! 

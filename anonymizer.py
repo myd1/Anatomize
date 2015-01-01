@@ -4,7 +4,7 @@
 # by Qiyuan Gong
 # qiyuangong@gmail.com
 
-from anatomy import anatomy
+from anatomizer import anatomizer
 from utils.read_data import read_data
 import sys
 # Poulis set k=25, m=2 as default!
@@ -18,6 +18,6 @@ if __name__ == '__main__':
     #read record
     data = read_data()
     # remove duplicate items
-    print "Begin Partition"
-    result = anatomy(data, L)
-    print "Finish Partition!!"
+    print "Begin Anatomizer"
+    result = anatomizer(data, L)
+    print "Finish Anatomizer!!"
