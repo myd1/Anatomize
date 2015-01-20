@@ -1,4 +1,5 @@
-import random, heapq
+import random
+import heapq
 
 # by Qiyuan Gong
 # qiyuangong@gmail.com
@@ -20,7 +21,11 @@ import random, heapq
 
 _DEBUG = False
 
+
 class SABucket(object):
+    """this class is used for bucketize
+    in Anatomize. Each bucket indicate one SA value
+    """
 
     def __init__(self, data, index):
         self.member = data[:]
@@ -81,7 +86,7 @@ def anatomizer(data, L):
         except:
             buckets[list_temp] = [temp]
     # group stage
-    # each round choose l largest buckets, then pop 
+    # each round choose l largest buckets, then pop
     # an element from these buckets to form a group
     # We use heap to sort buckets.
     for i, temp in enumerate(buckets.values()):
@@ -113,7 +118,7 @@ def anatomizer(data, L):
     # residue-assign stage
     # If the dataset is even distributed on SA, only one tuple will
     # remain in this stage. However, most dataset don't satisfy this
-    # condition, so lots of records need to be re-assigned. In worse 
+    # condition, so lots of records need to be re-assigned. In worse
     # case, some records cannot be assigned to any groups, which will
     # be suppressed (deleted).
     while len(h):
@@ -121,7 +126,7 @@ def anatomizer(data, L):
         index = temp.index
         while temp.member:
             for g in groups:
-                if g.check_index(index) == False:
+                if g.check_index(index) is False:
                     g.add_element(temp.pop_element(), index)
                     break
             else:
@@ -145,10 +150,3 @@ def anatomizer(data, L):
         for i in range(len(GT)):
             print GT[i] + ST[i]
     return result
-
-
-
-
-
-
-

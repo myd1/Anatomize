@@ -1,16 +1,17 @@
 #!/usr/bin/env python
-#coding=utf-8
+# coding=utf-8
 
 # Read data and read tree fuctions for INFORMS data
-# attributes ['age', 'workcalss', 'final_weight', 'education', 'education_num', 'matrital_status', 'occupation', 'relationship', 'race', 'sex', 'capital_gain', 'capital_loss', 'hours_per_week', 'native_country', 'class']
+# attributes ['age', 'workcalss', 'final_weight', 'education', 'education_num', 'matrital_status', 'occupation',
+# 'relationship', 'race', 'sex', 'capital_gain', 'capital_loss', 'hours_per_week', 'native_country', 'class']
 # QID ['age', 'workcalss', 'education', 'matrital_status', 'race', 'sex', 'native_country']
 # SA ['occopation']
 
 import pdb
 
-gl_att_names = ['age', 'workcalss', 'final_weight', 'education', \
-    'education_num', 'matrital_status', 'occupation', 'relationship', \
-    'race', 'sex', 'capital_gain', 'capital_loss', 'hours_per_week', 'native_country', 'class']
+gl_att_names = ['age', 'workcalss', 'final_weight', 'education',
+                'education_num', 'matrital_status', 'occupation', 'relationship',
+                'race', 'sex', 'capital_gain', 'capital_loss', 'hours_per_week', 'native_country', 'class']
 gl_QI_index = [0, 1, 3, 5, 8, 9, 13]
 gl_SA_index = 6
 
@@ -37,7 +38,3 @@ def read_data():
         ltemp.append(temp[gl_SA_index])
         data.append(ltemp)
     return data
-
-
-
-

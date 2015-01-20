@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#coding=utf-8
+# coding=utf-8
 
 # by Qiyuan Gong
 # qiyuangong@gmail.com
@@ -15,9 +15,10 @@ if __name__ == '__main__':
         L = int(sys.argv[1])
     except:
         pass
-    #read record
+    # read record
     data = read_data()
     # remove duplicate items
     print "Begin Anatomizer"
     result = anatomizer(data, L)
+    print "No. groups in result=%d" % len(result)
     print "Finish Anatomizer!!"
