@@ -125,6 +125,8 @@ def anatomizer(data, L):
         (length, temp) = heapq.heappop(h)
         index = temp.index
         while temp.member:
+            # pseudo-code in Xiao's paper use random in this step
+            # Herein, I try groups in order. It's much faster.
             for g in groups:
                 if g.check_index(index) is False:
                     g.add_element(temp.pop_element(), index)
