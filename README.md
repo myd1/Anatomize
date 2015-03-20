@@ -18,6 +18,19 @@ Researches on data privacy have lasted for more than ten years, lots of great pa
 
 I decided to make some effort. Hoping these open source repositories can help researchers and developers on data privacy (privacy preserving data publishing).
 
+
+### Usage:
+My Implement is based on Python 2.7 (not Python 3.0). Please make sure your Python environment is collectly installed. You can run Anatomy in following steps: 
+1) Download (or clone) the whole project. 2) Run "anonymized.py" in root dir with CLI.
+
+
+	# run Mondrian with default l(l=10)
+	python anonymizer.py 
+	
+	# run Mondrian with l=20
+	python anonymized.py 20
+
+
 ## For more information:
 
 [1] X. Xiao, Y. Tao. Anatomy: simple and effective privacy preservation Proceedings of the 32nd international conference on Very large data bases, VLDB Endowment, 2006, 139-150 
