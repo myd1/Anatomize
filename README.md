@@ -1,8 +1,8 @@
-# Anatomizer
+# Anatomize
 
-Anatomizer is a linear anonymization algorithm base on Anatomy, proposed by Xiao et. al.[1]. Anatomy anonymize dataset by breaking direct correlation between QID and SA (publish QID and SA in separated tables). To our knowledge, Anatomizer is the fastest algorithm, which preserve good data utility at the same time. Although Xiao et. al. gave the pseudocode in his paper, the original source code is not available. You can find the Java implementation in Anonymization Toolbox[2].
+Anatomize is a linear anonymization algorithm base on Anatomy, proposed by Xiao et. al.[1]. Anatomy anonymize dataset by breaking direct correlation between QID and SA (publish QID and SA in separated tables). To our knowledge, Anatomize is the fastest algorithm, which preserve good data utility at the same time. Although Xiao et. al. gave the pseudocode in his paper, the original source code is not available. You can find the Java implementation in Anonymization Toolbox[2].
 
-This repository is an **open source python implementation for Anatomizer**. I implement this algorithm in python for further study.
+This repository is an **open source python implementation for Anatomize**. I implement this algorithm in python for further study.
 
 
 

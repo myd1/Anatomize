@@ -59,7 +59,7 @@ class Group(object):
         return False
 
 
-def anatomizer(data, L):
+def anatomize(data, L):
     """
     only one SA is supported in anatomy.
     Separation grouped member into QIT and SAT

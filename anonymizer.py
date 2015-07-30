@@ -4,7 +4,7 @@
 # by Qiyuan Gong
 # qiyuangong@gmail.com
 
-from anatomizer import anatomizer
+from anatomize import anatomize
 from utils.read_data import read_data
 import sys
 # Poulis set k=25, m=2 as default!
@@ -19,6 +19,6 @@ if __name__ == '__main__':
     data = read_data()
     # remove duplicate items
     print "Begin Anatomizer"
-    result = anatomizer(data, L)
+    result = anatomize(data, L)
     print "No. groups in result=%d" % len(result)
     print "Finish Anatomizer!!"
