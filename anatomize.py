@@ -1,5 +1,6 @@
-import random
-import heapq
+"""
+Main module of Anatomize.
+"""
 
 # by Qiyuan Gong
 # qiyuangong@gmail.com
@@ -18,12 +19,16 @@ import heapq
 #   numpages = {12}
 # }
 
+import random
+import heapq
+
 
 _DEBUG = False
 
 
 class SABucket(object):
-    """this class is used for bucketize
+    """
+    this class is used for bucketize
     in Anatomize. Each bucket indicate one SA value
     """
 
@@ -39,6 +44,9 @@ class SABucket(object):
 
 
 class Group(object):
+    """
+    Group records to form Equivalent Class
+    """
 
     def __init__(self):
         self.index = 0
@@ -71,9 +79,9 @@ def anatomize(data, L):
     buckets = {}
     result = []
     suppress = []
-    GT = []
-    ST = []
-    h = []
+    qi_table = []
+    sa_table = []
+    heap = []
     if _DEBUG:
         print '*' * 10
         print "Begin Anatomizer!"
@@ -94,14 +102,14 @@ def anatomize(data, L):
         pos = len(temp) * -1
         if pos == 0:
             continue
-        heapq.heappush(h, (pos, SABucket(temp, i)))
-    while len(h) >= L:
+        heapq.heappush(heap, (pos, SABucket(temp, i)))
+    while len(heap) >= L:
         newgroup = Group()
         length_list = []
         SAB_list = []
         # choose l largest buckets
         for i in range(L):
-            (length, temp) = heapq.heappop(h)
+            (length, temp) = heapq.heappop(heap)
             length_list.append(length)
             SAB_list.append(temp)
         # pop an element from choosen buckets
@@ -113,7 +121,7 @@ def anatomize(data, L):
             if length == 0:
                 continue
             # push new tuple to heap
-            heapq.heappush(h, (length, temp))
+            heapq.heappush(heap, (length, temp))
         groups.append(newgroup)
     # residue-assign stage
     # If the dataset is even distributed on SA, only one tuple will
@@ -121,34 +129,34 @@ def anatomize(data, L):
     # condition, so lots of records need to be re-assigned. In worse
     # case, some records cannot be assigned to any groups, which will
     # be suppressed (deleted).
-    while len(h):
-        (length, temp) = heapq.heappop(h)
+    while len(heap):
+        (length, temp) = heapq.heappop(heap)
         index = temp.index
         while temp.member:
             # pseudo-code in Xiao's paper use random in this step
             # Herein, I try groups in order. It's much faster.
-            for g in groups:
-                if g.check_index(index) is False:
-                    g.add_element(temp.pop_element(), index)
+            for group in groups:
+                if group.check_index(index) is False:
+                    group.add_element(temp.pop_element(), index)
                     break
             else:
                 suppress.extend(temp.member[:])
                 break
     # transform and print result
-    for i, t in enumerate(groups):
-        t.index = i
-        result.append(t.member[:])
-        # creat ST and GT
-        for temp in t.member:
-            GT_temp = temp[:-1]
-            GT_temp.append(i)
-            SA_temp = [temp[-1]]
-            SA_temp.insert(0, i)
-            GT.append(GT_temp)
-            ST.append(SA_temp)
+    for i, group in enumerate(groups):
+        group.index = i
+        result.append(group.member[:])
+        # creat sa_table and qi_table
+        for temp in group.member:
+            qi_temp = temp[:-1]
+            qi_temp.append(i)
+            sa_temp = [temp[-1]]
+            sa_temp.insert(0, i)
+            qi_table.append(qi_temp)
+            sa_table.append(sa_temp)
     if _DEBUG:
         print 'NO. of Suppress after anatomy = %d' % len(suppress)
         print 'NO. of groups = %d' % len(result)
-        for i in range(len(GT)):
-            print GT[i] + ST[i]
+        for i in range(len(qi_table)):
+            print qi_table[i] + sa_table[i]
     return result

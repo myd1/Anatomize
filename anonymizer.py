@@ -1,4 +1,8 @@
-#!/usr/bin/env python
+"""
+run anatomize with given parameters
+"""
+
+# !/usr/bin/env python
 # coding=utf-8
 
 # by Qiyuan Gong
@@ -7,18 +11,17 @@
 from anatomize import anatomize
 from utils.read_data import read_data
 import sys
-# Poulis set k=25, m=2 as default!
 
 if __name__ == '__main__':
     L = 10
     try:
         L = int(sys.argv[1])
-    except:
+    except (IndentationError, IndexError) as input_error:
         pass
     # read record
-    data = read_data()
+    RAW_DATA = read_data()
     # remove duplicate items
     print "Begin Anatomizer"
-    result = anatomize(data, L)
-    print "No. groups in result=%d" % len(result)
+    RESULT = anatomize(RAW_DATA, L)
+    print "No. groups in result=%d" % len(RESULT)
     print "Finish Anatomizer!!"
