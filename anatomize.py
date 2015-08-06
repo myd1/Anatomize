@@ -2,7 +2,7 @@
 Main module of Anatomize.
 """
 
-# by Qiyuan Gong
+# implemented by Qiyuan Gong
 # qiyuangong@gmail.com
 
 # @INPROCEEDINGS{
@@ -67,25 +67,12 @@ class Group(object):
         return False
 
 
-def anatomize(data, L):
+def build_SA_bucket(data):
     """
-    only one SA is supported in anatomy.
-    Separation grouped member into QIT and SAT
-    Use heap to get l largest buckets
-    L is the denote l in l-diversity.
-    data is a list, i.e. [qi1,qi2,sa]
+    build SA buckets and a heap sorted by number of records in bucket
     """
-    groups = []
     buckets = {}
-    result = []
-    suppress = []
-    qi_table = []
-    sa_table = []
-    heap = []
-    if _DEBUG:
-        print '*' * 10
-        print "Begin Anatomizer!"
-    print "L=%d" % L
+    bucket_heap = []
     # Assign SA into buckets
     for temp in data:
         list_temp = temp[-1]
@@ -102,14 +89,23 @@ def anatomize(data, L):
         pos = len(temp) * -1
         if pos == 0:
             continue
-        heapq.heappush(heap, (pos, SABucket(temp, i)))
-    while len(heap) >= L:
+        heapq.heappush(bucket_heap, (pos, SABucket(temp, i)))
+    return buckets, bucket_heap
+
+
+def assign_to_groups(buckets, bucket_heap, L):
+    """
+    assign records to groups.
+    Each iterator pos 1 record from L largest bucket to form a group.
+    """
+    groups = []
+    while len(bucket_heap) >= L:
         newgroup = Group()
         length_list = []
         SAB_list = []
         # choose l largest buckets
         for i in range(L):
-            (length, temp) = heapq.heappop(heap)
+            (length, temp) = heapq.heappop(bucket_heap)
             length_list.append(length)
             SAB_list.append(temp)
         # pop an element from choosen buckets
@@ -121,28 +117,53 @@ def anatomize(data, L):
             if length == 0:
                 continue
             # push new tuple to heap
-            heapq.heappush(heap, (length, temp))
+            heapq.heappush(bucket_heap, (length, temp))
         groups.append(newgroup)
-    # residue-assign stage
-    # If the dataset is even distributed on SA, only one tuple will
-    # remain in this stage. However, most dataset don't satisfy this
-    # condition, so lots of records need to be re-assigned. In worse
-    # case, some records cannot be assigned to any groups, which will
-    # be suppressed (deleted).
-    while len(heap):
-        (length, temp) = heapq.heappop(heap)
+    return groups
+
+
+def residue_assign(groups, bucket_heap):
+    """
+    residue-assign stage
+    If the dataset is even distributed on SA, only one tuple will
+    remain in this stage. However, most dataset don't satisfy this
+    condition, so lots of records need to be re-assigned. In worse
+    case, some records cannot be assigned to any groups, which will
+    be suppressed (deleted).
+    """
+    suppress = []
+    while len(bucket_heap):
+        (_, temp) = heapq.heappop(bucket_heap)
         index = temp.index
+        candidate_set = []
+        for group in groups:
+            if group.check_index(index) is False:
+                candidate_set.append(group)
+        if len(candidate_set) == 0:
+            suppress.extend(temp.member[:])
         while temp.member:
-            # pseudo-code in Xiao's paper use random in this step
-            # Herein, I try groups in order. It's much faster.
-            for group in groups:
-                if group.check_index(index) is False:
-                    group.add_element(temp.pop_element(), index)
-                    break
-            else:
-                suppress.extend(temp.member[:])
+            candidate_len = len(candidate_set)
+            if candidate_len == 0:
                 break
-    # transform and print result
+            current_record = temp.pop_element()
+            group_index = random.randrange(candidate_len)
+            group = candidate_set.pop(group_index)
+            group.add_element(current_record, index)
+        if len(temp.member) >= 0:
+            suppress.extend(temp.member[:])
+    return groups, suppress
+
+
+def split_table(groups):
+    """
+    split table to qi_table, sa_table and grouped result
+    qi_table contains qi and gid
+    sa_table contains sa and gid
+    result contains raw data grouped
+    """
+    qi_table = []
+    sa_table = []
+    result = []
     for i, group in enumerate(groups):
         group.index = i
         result.append(group.member[:])
@@ -154,6 +175,29 @@ def anatomize(data, L):
             sa_temp.insert(0, i)
             qi_table.append(qi_temp)
             sa_table.append(sa_temp)
+    return qi_table, sa_table, result
+
+
+def anatomize(data, L):
+    """
+    only one SA is supported in anatomy.
+    Separation grouped member into QIT and SAT
+    Use heap to get l largest buckets
+    L is the denote l in l-diversity.
+    data is a list, i.e. [qi1,qi2,sa]
+    """
+    if _DEBUG:
+        print '*' * 10
+        print "Begin Anatomizer!"
+    print "L=%d" % L
+    # build SA buckets
+    buckets, bucket_heap = build_SA_bucket(data)
+    # assign records to groups
+    groups = assign_to_groups(buckets, bucket_heap, L)
+    # handle residue records
+    groups, suppress = residue_assign(groups, bucket_heap)
+    # transform and print result
+    qi_table, sa_table, result = split_table(groups)
     if _DEBUG:
         print 'NO. of Suppress after anatomy = %d' % len(suppress)
         print 'NO. of groups = %d' % len(result)

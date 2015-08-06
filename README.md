@@ -13,13 +13,6 @@ Researches on data privacy have lasted for more than ten years, lots of great pa
 I decided to make some effort. Hoping these open source repositories can help researchers and developers on data privacy (privacy preserving data publishing).
 
 
-
-### Attention
-
-In residue-assignmenet setp, the original pseudocode in Xiao's paper suggest to use random. I found it unsufficient. So I try every groups in order. It's much faster, meanwhile making previous groups much larger.
-
-
-
 ### Usage:
 
 My Implementation is based on Python 2.7 (not Python 3.0). Please make sure your Python environment is collectly installed. You can run Anatomy in following steps: 
