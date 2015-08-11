@@ -16,7 +16,7 @@ if __name__ == '__main__':
     L = 10
     try:
         L = int(sys.argv[1])
-    except (IndentationError, IndexError) as input_error:
+    except IndexError:
         pass
     # read record
     RAW_DATA = read_data()

@@ -38,9 +38,16 @@ class SABucket(object):
         self.index = index
 
     def pop_element(self):
-        """pop an element from SABucket
+        """
+        pop an element from SABucket
         """
         return self.member.pop()
+
+    def __len__(self):
+        """
+        return number of records
+        """
+        return len(self.member)
 
 
 class Group(object):
@@ -54,17 +61,25 @@ class Group(object):
         self.checklist = set()
 
     def add_element(self, record, index):
-        """add element pair (record, index) to Group
+        """
+        add element pair (record, index) to Group
         """
         self.member.append(record[:])
         self.checklist.add(index)
 
     def check_index(self, index):
-        """Check if index is in checklist
+        """
+        Check if index is in checklist
         """
         if index in self.checklist:
             return True
         return False
+
+    def __len__(self):
+        """
+        return number of records
+        """
+        return len(self.member)
 
 
 def build_SA_bucket(data):
@@ -74,22 +89,26 @@ def build_SA_bucket(data):
     buckets = {}
     bucket_heap = []
     # Assign SA into buckets
-    for temp in data:
-        list_temp = temp[-1]
+    for record in data:
+        sa_value = record[-1]
         try:
-            buckets[list_temp].append(temp)
-        except:
-            buckets[list_temp] = [temp]
+            buckets[sa_value].append(record)
+        except KeyError:
+            buckets[sa_value] = [record]
+    # random shuffle records in buckets
+    # make pop random
+    for key in buckets.keys():
+        random.shuffle(buckets[key])
     # group stage
     # each round choose l largest buckets, then pop
     # an element from these buckets to form a group
     # We use heap to sort buckets.
-    for i, temp in enumerate(buckets.values()):
+    for i, bucketed_record in enumerate(buckets.values()):
         # push to heap reversely
-        pos = len(temp) * -1
-        if pos == 0:
+        length = len(bucketed_record) * -1
+        if length == 0:
             continue
-        heapq.heappush(bucket_heap, (pos, SABucket(temp, i)))
+        heapq.heappush(bucket_heap, (length, SABucket(bucketed_record, i)))
     return buckets, bucket_heap
 
 
@@ -105,19 +124,19 @@ def assign_to_groups(buckets, bucket_heap, L):
         SAB_list = []
         # choose l largest buckets
         for i in range(L):
-            (length, temp) = heapq.heappop(bucket_heap)
+            (length, bucket) = heapq.heappop(bucket_heap)
             length_list.append(length)
-            SAB_list.append(temp)
+            SAB_list.append(bucket)
         # pop an element from choosen buckets
         for i in range(L):
-            temp = SAB_list[i]
+            bucket = SAB_list[i]
             length = length_list[i]
-            newgroup.add_element(temp.pop_element(), temp.index)
+            newgroup.add_element(bucket.pop_element(), bucket.index)
             length += 1
             if length == 0:
                 continue
             # push new tuple to heap
-            heapq.heappush(bucket_heap, (length, temp))
+            heapq.heappush(bucket_heap, (length, bucket))
         groups.append(newgroup)
     return groups
 
@@ -133,24 +152,24 @@ def residue_assign(groups, bucket_heap):
     """
     suppress = []
     while len(bucket_heap):
-        (_, temp) = heapq.heappop(bucket_heap)
-        index = temp.index
+        (_, bucket) = heapq.heappop(bucket_heap)
+        index = bucket.index
         candidate_set = []
         for group in groups:
             if group.check_index(index) is False:
                 candidate_set.append(group)
         if len(candidate_set) == 0:
-            suppress.extend(temp.member[:])
-        while temp.member:
+            suppress.extend(bucket.member[:])
+        while bucket.member:
             candidate_len = len(candidate_set)
             if candidate_len == 0:
                 break
-            current_record = temp.pop_element()
+            current_record = bucket.pop_element()
             group_index = random.randrange(candidate_len)
             group = candidate_set.pop(group_index)
             group.add_element(current_record, index)
-        if len(temp.member) >= 0:
-            suppress.extend(temp.member[:])
+        if len(bucket) >= 0:
+            suppress.extend(bucket.member[:])
     return groups, suppress
 
 
@@ -168,13 +187,13 @@ def split_table(groups):
         group.index = i
         result.append(group.member[:])
         # creat sa_table and qi_table
-        for temp in group.member:
-            qi_temp = temp[:-1]
-            qi_temp.append(i)
-            sa_temp = [temp[-1]]
-            sa_temp.insert(0, i)
-            qi_table.append(qi_temp)
-            sa_table.append(sa_temp)
+        for record in group.member:
+            qi_part = record[:-1]
+            qi_part.append(i)
+            sa_part = [record[-1]]
+            sa_part.insert(0, i)
+            qi_table.append(qi_part)
+            sa_table.append(sa_part)
     return qi_table, sa_table, result
 
 
